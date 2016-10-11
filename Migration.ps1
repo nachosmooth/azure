@@ -1,7 +1,7 @@
 ﻿Select-AzureSubscription "Desarrollo"
 
 $servicename = "dev-migration"
-$vmname = "dev-migration01"
+$vmname = "dev-migration001"
 
 Get-AzureVM -ServiceName $servicename -Name $vmname | Stop-AzureVM
 
@@ -35,4 +35,10 @@ while(($blobCopy | Get-AzureStorageBlobCopyState).Status -eq "Pending")
 {
     Start-Sleep -s 30
     $blobCopy | Get-AzureStorageBlobCopyState
-}
+} 
+
+
+$mediaLinkdestination = "https://$destinationStorageAccountName.blob.core.windows.net/$destinationContainer/$blobName"
+# Write-Host "Destination:" $mediaLinkdestination
+
+Add-AzureDisk -DiskName $vmname -OS Linux -MediaLocation $mediaLinkdestination  -Verbose
